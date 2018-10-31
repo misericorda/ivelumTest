@@ -24,15 +24,16 @@ def catch_all(path):
     soup = BeautifulSoup(res.content, "html.parser")
     # replace words in visible part of the page
     content = soup.find('div', {'class': 'layout'})
-    # replace all text occurrences
-    targets = content.find_all(text=RE_ALL_CHARS)
-    for t in targets:
-        fixed = RE_ALL_CHARS.sub(lambda x: '%s™' % x.group(), t)
-        t.replace_with(fixed)
-    # replace links
-    links = soup.find_all('a', {'href': RE_HABR_LINKS})
-    for l in links:
-        l['href'] = urlparse(l['href']).path
+    if content:
+        # replace all text occurrences
+        targets = content.find_all(text=RE_ALL_CHARS)
+        for t in targets:
+            fixed = RE_ALL_CHARS.sub(lambda x: '%s™' % x.group(), t)
+            t.replace_with(fixed)
+        # replace links
+        links = soup.find_all('a', {'href': RE_HABR_LINKS})
+        for l in links:
+            l['href'] = urlparse(l['href']).path
     return str(soup)
 
 
